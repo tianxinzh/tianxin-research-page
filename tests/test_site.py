@@ -19,8 +19,8 @@ import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / 'docs'
-CUSTOM_DOMAIN = (DOCS / 'CNAME').is_file()
-BASE = 'https://searcher.cloud' if CUSTOM_DOMAIN else 'https://tianxinzh.github.io'
+PREFIX = '/tianxin-research-page'
+BASE = 'https://tianxinzh.github.io' + PREFIX
 PAPERS = json.loads((ROOT / 'content/papers.json').read_text())
 
 
@@ -121,15 +121,12 @@ class SiteTests(unittest.TestCase):
             'assets/style.css', 'citations/index.html',
             'citations/publications.bib', 'sources/index.html',
         }
-        if CUSTOM_DOMAIN:
-            expected.add('CNAME')
         for paper in PAPERS:
             expected.update({f"papers/{paper['slug']}/index.html",
                              f"citations/{paper['slug']}.bib"})
         actual = {p.relative_to(DOCS).as_posix() for p in DOCS.rglob('*') if p.is_file()}
         self.assertEqual(actual, expected, 'Unexpected/missing public files; review for leaks or stale output')
-        if CUSTOM_DOMAIN:
-            self.assertEqual((DOCS / 'CNAME').read_text().strip(), 'searcher.cloud')
+        self.assertFalse((DOCS / 'CNAME').exists())
 
     def test_internal_links_and_fragments(self):
         for page in self.pages.values():
@@ -138,7 +135,8 @@ class SiteTests(unittest.TestCase):
                     url = urlsplit(urljoin(BASE + page.public_path, link))
                     if url.scheme not in ('http', 'https') or url.netloc != urlsplit(BASE).netloc:
                         continue
-                    dest = DOCS / unquote(url.path).lstrip('/')
+                    self.assertTrue(url.path.startswith(PREFIX + '/'), 'Internal link escaped project path')
+                    dest = DOCS / unquote(url.path[len(PREFIX):]).lstrip('/')
                     if dest.is_dir():
                         dest = dest / 'index.html'
                     self.assertTrue(dest.is_file(), f'Missing internal link target: {dest}')
@@ -171,7 +169,7 @@ class SiteTests(unittest.TestCase):
                 self.assertTrue(page.meta['description'][0])
                 self.assertTrue(page.meta['og:title'][0])
                 self.assertTrue(page.meta['twitter:title'][0])
-                expected = 'noindex,follow' if page.public_path == '/404.html' or not CUSTOM_DOMAIN else 'index,follow'
+                expected = 'noindex,follow' if page.public_path == '/404.html' else 'index,follow'
                 self.assertEqual(page.meta['robots'], [expected])
 
     def test_sitemap_and_robots(self):
@@ -260,7 +258,7 @@ class SiteTests(unittest.TestCase):
             if paper['slug'] in ('juryprobe', 'openregshift'):
                 self.assertIsNone(paper['code_url'])
                 repo_links = [l for l in page.links if 'github.com/' in l]
-                self.assertEqual(repo_links, ['https://github.com/tianxinzh'])
+                self.assertEqual(repo_links, ['https://github.com/tianxinzh/tianxin-research-page'])
         for path in DOCS.rglob('*'):
             if path.is_file():
                 text = path.read_text(encoding='utf-8')
@@ -319,43 +317,63 @@ class SiteTests(unittest.TestCase):
                 light, dark = sorted([luminance(palette[fg]), luminance(palette[bg])], reverse=True)
                 self.assertGreaterEqual((light + .05) / (dark + .05), 4.5, f'{fg} on {bg}')
 
-    def test_custom_domain_requires_explicit_build_flag(self):
-        # Exercise staging -> production -> staging in an isolated output tree.
-        # No DNS, Pages settings, or checked-in files are changed by this test.
+    def test_default_build_removes_stale_domain_and_is_indexable(self):
         with tempfile.TemporaryDirectory() as folder:
             output = Path(folder)
-            command = [sys.executable, str(ROOT / 'scripts/build.py'),
-                       '--output-dir', str(output)]
-            def build(custom=False):
-                subprocess.run(command + (['--custom-domain'] if custom else []),
-                               cwd=ROOT, check=True, stdout=subprocess.PIPE, text=True)
-            def check(base, indexed):
-                for path in output.rglob('*.html'):
-                    page = HTML(path)
-                    relative = '/' + path.relative_to(output).as_posix()
-                    relative = relative[:-10] if relative.endswith('index.html') else relative
-                    canonical = [a['href'] for a in page.attrs('link') if a.get('rel') == 'canonical']
-                    self.assertEqual(canonical, [base + relative])
-                    self.assertEqual(page.meta['og:url'], canonical)
-                    expected = 'index,follow' if indexed and relative != '/404.html' else 'noindex,follow'
-                    self.assertEqual(page.meta['robots'], [expected])
-                    if 'citation_abstract_html_url' in page.meta:
-                        self.assertEqual(page.meta['citation_abstract_html_url'], canonical)
-                    other = 'https://tianxinzh.github.io' if indexed else 'https://searcher.cloud'
-                    self.assertNotIn(other, json.dumps(page.jsonld))
-                self.assertIn('Sitemap: ' + base + '/sitemap.xml', (output / 'robots.txt').read_text())
-                ns = {'s': 'http://www.sitemaps.org/schemas/sitemap/0.9'}
-                locations = ET.parse(output / 'sitemap.xml').findall('s:url/s:loc', ns)
-                self.assertTrue(all(n.text.startswith(base + '/') for n in locations))
-            build()
+            (output / 'CNAME').write_text('obsolete.example\n')
+            subprocess.run([sys.executable, str(ROOT / 'scripts/build.py'),
+                            '--output-dir', str(output)], check=True, stdout=subprocess.PIPE)
             self.assertFalse((output / 'CNAME').exists())
-            check('https://tianxinzh.github.io', False)
-            build(custom=True)
-            self.assertEqual((output / 'CNAME').read_text(), 'searcher.cloud\n')
-            check('https://searcher.cloud', True)
-            build()
-            self.assertFalse((output / 'CNAME').exists(), 'Default rebuild retained a premature CNAME')
-            check('https://tianxinzh.github.io', False)
+            for path in output.rglob('*.html'):
+                page = HTML(path)
+                relative = '/' + path.relative_to(output).as_posix()
+                relative = relative[:-10] if relative.endswith('index.html') else relative
+                canonical = [a['href'] for a in page.attrs('link') if a.get('rel') == 'canonical']
+                self.assertEqual(canonical, [BASE + relative])
+                expected = 'noindex,follow' if relative == '/404.html' else 'index,follow'
+                self.assertEqual(page.meta['robots'], [expected])
+                self.assertNotIn('searcher.cloud', page.source)
+
+    def test_project_path_covers_every_internal_resource(self):
+        for page in self.pages.values():
+            for link in page.links:
+                if link.startswith('/'):
+                    self.assertTrue(link.startswith(PREFIX + '/'), (page.public_path, link))
+                    self.assertFalse(link.startswith(PREFIX + PREFIX), link)
+            for tag in ('script', 'link'):
+                for attrs in page.attrs(tag):
+                    resource = attrs.get('src', attrs.get('href', ''))
+                    if '/assets/' in resource:
+                        self.assertTrue(resource.startswith(PREFIX + '/assets/'))
+            if page.meta.get('citation_abstract_html_url'):
+                self.assertEqual(page.meta['citation_abstract_html_url'], [BASE + page.public_path])
+
+    def test_home_is_a_publication_collection(self):
+        page = self.pages[DOCS / 'index.html']
+        data = page.jsonld[0]
+        self.assertEqual(data['@type'], 'CollectionPage')
+        self.assertEqual(data['name'], 'Tianxin Research Page')
+        items = data['mainEntity']['itemListElement']
+        self.assertEqual(len(items), len(PAPERS))
+        self.assertEqual(data['mainEntity']['numberOfItems'], len(PAPERS))
+        for position, (item, paper) in enumerate(zip(items, PAPERS), 1):
+            self.assertEqual(item['position'], position)
+            self.assertEqual(item['url'], BASE + '/papers/' + paper['slug'] + '/')
+            self.assertEqual(item['name'], paper['title'])
+        for text in ('ProfilePage', 'author-name', 'searcher.cloud', 'Tianxin Zhou home'):
+            self.assertNotIn(text, page.source)
+        self.assertIn('Publication collection', page.source)
+        self.assertNotIn('<h1 id="collection-title">Tianxin', page.source)
+
+    def test_brand_and_dates_are_not_personal_homepage_metadata(self):
+        for page in self.pages.values():
+            self.assertEqual(page.meta['og:site_name'], ['Tianxin Research Page'])
+            self.assertNotIn('searcher.cloud', page.source)
+            self.assertNotIn('ProfilePage', page.source)
+            self.assertNotIn('meta name="author" content="Tianxin Zhou"', page.source)
+        jury = next(p for p in PAPERS if p['slug'] == 'juryprobe')
+        self.assertIsNone(jury['publication_date'], 'Do not conflate arXiv posting and journal publication dates')
+        self.assertEqual(jury['arxiv_submission_date'], '2026-08-20')
 
     def test_build_is_reproducible(self):
         def hashes():
@@ -363,8 +381,6 @@ class SiteTests(unittest.TestCase):
                     for p in DOCS.rglob('*') if p.is_file()}
         before = hashes()
         command = [sys.executable, str(ROOT / 'scripts/build.py')]
-        if CUSTOM_DOMAIN:
-            command.append('--custom-domain')
         subprocess.run(command, cwd=ROOT,
                        check=True, stdout=subprocess.PIPE, text=True)
         self.assertEqual(hashes(), before, 'Generated output is stale or build is nondeterministic')

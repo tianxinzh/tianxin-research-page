@@ -8,7 +8,7 @@
       "Ruixi Lin"
     ],
     "year": 2026,
-    "publication_date": "2026-08-20",
+    "publication_date": null,
     "updated_date": "2026-08-27",
     "venue": "Transactions on Machine Learning Research",
     "status": "TMLR 2026",
@@ -37,7 +37,8 @@
     "bibtex": "@article{zhou2026juryprobe,\n  title={{JuryProbe: An Empirical Consensus-Risk Diagnostic for Routing Reference-Free Factuality Judge Panels to Grounded Verification}},\n  author={Zhou, Tianxin and Lin, Ruixi},\n  journal={Transactions on Machine Learning Research},\n  year={2026},\n  url={https://openreview.net/forum?id=dgBczhxcZY}\n}",
     "bibtex_provenance": "Conservatively constructed from verified arXiv journal metadata and the OpenReview URL linked in the paper. Not an OpenReview-exported citation; no journal DOI, volume, issue, or page range asserted.",
     "verified_at": "2026-10-05",
-    "status_note": "TMLR acceptance verified from arXiv metadata. OpenReview forum is linked by the paper but was not readable during verification."
+    "status_note": "TMLR acceptance verified from arXiv metadata. OpenReview forum is linked by the paper but was not readable during verification.",
+    "arxiv_submission_date": "2026-08-20"
   },
   {
     "slug": "modularsql",
@@ -63,7 +64,7 @@
     "contributions": [
       "Multiset-EX retains duplicate counts while ignoring row order. A post-selection detector triggers deterministic DISTINCT patches or candidate-based LLM rescue.",
       "Across three released DeepEye-SQL backbones, Set-EX exceeded Multiset-EX by 5.81–6.79 percentage points on 1,532 executable BIRD-Dev queries.",
-      "The Qwen3-Coder reproduction improved Multiset-EX from 65.86% to 67.75%, preserving 72.06% Set-EX. It flagged 77 anomalies, with $0.0076 total additional LLM cost and 120 ms amortized overhead per query."
+      "The Qwen3-Coder reproduction improved Multiset-EX from 65.86% to 67.75%, preserving 72.06% Set-EX. In the reported 1,532-query run, it flagged 77 anomalies, with $0.0076 total additional LLM cost and 120 ms amortized overhead per query."
     ],
     "limitations": [
       "Experiments cover BIRD-Dev with SQLite. Full candidate-based rescue was tested only with the DeepEye-SQL reproduction; candidate-free components transferred to two other released prediction sets.",
@@ -77,7 +78,8 @@
     "bibtex": "@misc{zhou2026modularsql,\n  title={{ModularSQL: A Runtime Guardrail for the Multiplicity Blind Spot in Text-to-SQL}},\n  author={Zhou, Tianxin and Lin, Ruixi},\n  year={2026},\n  eprint={2609.29573},\n  archivePrefix={arXiv},\n  primaryClass={cs.CL},\n  url={https://arxiv.org/abs/2609.29573}\n}",
     "bibtex_provenance": "Constructed from verified arXiv metadata; the export endpoint could not be retrieved. Month omitted because the 2609 identifier and source-reported August submission date are inconsistent.",
     "verified_at": "2026-10-05",
-    "date_note": "The arXiv record reports 2026-08-26 despite its 2609 identifier; display year only until reconciled."
+    "date_note": "The arXiv record reports 2026-08-26 despite its 2609 identifier; display year only until reconciled.",
+    "arxiv_submission_date": null
   },
   {
     "slug": "openregshift",
@@ -103,7 +105,7 @@
     "contributions": [
       "D_CF5 cross-fits the risk difference between regional and global convex blends. A separate Probe-Validated Ensemble Selector compares candidates against a static-convex floor using held-out validation; the selector does not use D_CF5 as an input.",
       "The diagnostic correlated with realized regional gains at Spearman +0.98 across 12 dataset-shift pairs and +0.83 in a 16-pair sensitivity analysis.",
-      "The prospective selector matched or improved its static floor in all 12 runs. Two deployments reduced test risk by 11% and 16%."
+      "The prospective selector matched or improved its static floor in all 12 runs. Two Seoul Bike deployments reduced test risk by 11% and 16%; the other ten runs retained the static floor."
     ],
     "limitations": [
       "The diagnostic targets regional convex reweighting, not every dynamic adaptation mechanism. It requires labeled target observations.",
@@ -115,6 +117,7 @@
     ],
     "bibtex": "@misc{zhou2026dynamicensembling,\n  title={{When Does Dynamic Ensembling Pay Off? Diagnosing Regionwise Gains in Regression under Distribution Shift}},\n  author={Zhou, Tianxin and Lin, Ruixi},\n  year={2026},\n  eprint={2608.18330},\n  archivePrefix={arXiv},\n  primaryClass={cs.LG},\n  url={https://arxiv.org/abs/2608.18330}\n}",
     "bibtex_provenance": "Constructed from verified arXiv metadata; the export endpoint could not be retrieved.",
-    "verified_at": "2026-10-05"
+    "verified_at": "2026-10-05",
+    "arxiv_submission_date": "2026-08-18"
   }
 ]

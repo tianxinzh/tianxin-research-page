@@ -1,64 +1,62 @@
-# Tianxin Zhou · Research
+# Tianxin Research Page
 
-Static academic website with public-paper summaries, original source links, explicit limitations, and BibTeX downloads for JuryProbe, ModularSQL, and the OpenRegShift paper.
+A publication-focused research collection for **https://tianxinzh.github.io/tianxin-research-page/**. Each paper has a stable landing page with its question, methods, reported findings, limitations, primary sources, code-availability statement, machine-readable citation metadata, and BibTeX downloads.
 
-**Current deployment:** https://tianxinzh.github.io/ is the working public preview. The intended custom domain, `searcher.cloud`, is not bound by the default build. Domain ownership verification and the website DNS cutover must be completed separately.
+Repository: https://github.com/tianxinzh/tianxin-research-page
 
-## Default preview build
+## Build and verify
 
-Requires Python 3.10 or later. The build and tests use only Python's standard library.
+Requires Python 3.10 or later. Build and tests use only the standard library.
 
 ```sh
 python scripts/build.py
 python -m unittest discover -s tests -v
-python -m http.server 8765 --directory docs
 ```
 
-The default build:
+Commit source and generated `docs/` output together. GitHub Pages publishes `main`, `/docs`, using **Settings → Pages → Deploy from a branch**. No Actions credentials, third-party scripts, external fonts, or analytics are required.
 
-- Uses `https://tianxinzh.github.io` for canonical, social, citation-page, JSON-LD, and sitemap URLs.
-- Sets HTML pages to `noindex,follow` while the site is a temporary preview. The pages remain publicly readable. This is an indexing request, not an access control.
-- Does **not** create `docs/CNAME`. If a previous custom-domain build left that generated file in the output directory, the default build removes it.
+The default build uses the GitHub project URL as the primary, indexable canonical. HTML, navigation, assets, citation downloads, social metadata, JSON-LD, and sitemap URLs all include `/tianxin-research-page`. Normal pages request `index,follow`; the 404 page requests `noindex,follow`. Search indexing and inclusion in AI answers are not guaranteed.
 
-The generated `docs/` directory is the complete website. Content remains readable without JavaScript; JavaScript only enhances citation copying. Fonts and assets are served locally, with no analytics or third-party tracking scripts.
-
-## GitHub Pages and custom-domain cutover
-
-The current publishing source is the `main` branch, `/docs` folder, using **Settings → Pages → Deploy from a branch**. Keep that source unchanged.
-
-Only as an explicit, approved custom-domain cutover step, build with:
+For an isolated build:
 
 ```sh
-python scripts/build.py --custom-domain
-python -m unittest discover -s tests -v
+python scripts/build.py --output-dir /tmp/tianxin-research-check
 ```
 
-This flag writes `docs/CNAME` containing `searcher.cloud`, changes every site-owned absolute URL to `https://searcher.cloud`, and enables indexing for the normal HTML pages. The 404 page stays `noindex,follow`. Continue using this flag for subsequent production builds once the custom domain is active; a default preview build would remove the generated binding file.
-
-The flag only creates files. It does not prove DNS ownership, edit DNS, configure GitHub's Pages settings, issue a certificate, or establish that the custom domain is live. Complete the GitHub TXT ownership check, configure the repository's custom domain before pointing DNS at Pages, preserve unrelated DNS records, and verify the live domain and certificate before announcing the custom-domain launch. Commit the generated output only in coordination with that cutover. Do not use the production build merely to refresh the preview.
-
-An isolated output directory is available for checks:
+To preview with the real project path, build into a directory of that name and serve its parent:
 
 ```sh
-python scripts/build.py --custom-domain --output-dir /tmp/research-site-production-check
+python scripts/build.py --output-dir /tmp/research-preview/tianxin-research-page
+python -m http.server 8765 --directory /tmp/research-preview
+# Open http://localhost:8765/tianxin-research-page/
 ```
 
-The tests exercise preview → custom-domain → preview in a temporary directory, including removal of a stale CNAME and consistency of the URL/indexing metadata. They do not contact or modify GitHub or DNS.
+## Stable paper pages
 
-Keep paper paths stable across the hostname change:
+- `/tianxin-research-page/papers/juryprobe/`
+- `/tianxin-research-page/papers/modularsql/`
+- `/tianxin-research-page/papers/openregshift/`
 
-- `/papers/juryprobe/`
-- `/papers/modularsql/`
-- `/papers/openregshift/`
+The repository was renamed from `tianxinzh.github.io`, preserving its history. GitHub redirects repository links, but [Pages URLs are an exception to repository rename redirects](https://docs.github.com/en/repositories/creating-and-managing-repositories/renaming-a-repository). Use the project URL above; do not assume the former root site or its paper paths redirect. Avoid recreating the old repository name, which would remove GitHub's repository redirect.
 
-## Editing content
+## Custom domains
 
-Edit `content/papers.json`, rebuild in the intended mode, run tests, and commit both the source and generated `docs/` output. `content/papers.json` is the citation source of truth; the builder creates the downloadable `.bib` files from it. HTML templates are in `scripts/build.py`; styling and optional progressive enhancement are in `assets/`.
+This site does not depend on a separately registered domain. No custom domain is configured, and builds remove a stale `docs/CNAME`. DNS is not modified by the builder.
 
-Before changing paper metadata, check the original source record. Use ordered authors, distinguish accepted papers from preprints, and avoid unsupported DOI, affiliation, quantitative, or generalization claims. Keep source-check dates current when the content is actually rechecked.
+A future custom-domain change requires a separate, approved migration, ownership/DNS verification, changes to the URL configuration, and live HTTPS checks. Binding a custom domain to GitHub Pages normally redirects the GitHub Pages address to that domain, so it is not an independent fallback for an expired domain. Keep the current configuration for a domain-renewal-independent address.
 
-## Publication and rights
+The included `robots.txt` records the project sitemap, but crawlers request robots.txt at the host root; a project-directory copy cannot set host-wide rules. The indexability controls on each HTML page and the canonical sitemap are the operative site-level metadata. Submit the project sitemap to a verified search-console property if one is configured separately.
 
-Paper PDFs remain on arXiv and the publication venue. This site does not redistribute PDFs, private research code, private data, or private repository content. OpenRegShift code remains private. The site assigns no software license to coauthored research implementations. Public visibility is not itself a reuse license.
+## Editing papers
 
-The site improves human readability and machine-readable metadata. Search indexing, generative-search visibility, and citation impact are not guaranteed.
+Edit `content/papers.json`, rebuild, and run all tests. Templates are in `scripts/build.py`; styling and progressive enhancement are in `assets/`. The JSON is the source of truth for generated citations. Do not copy extra research notes or deployment reports into `docs/`.
+
+Verify original source records before changing titles, author order, status, dates, quantitative findings, or public-code links. `arxiv_submission_date` describes the first arXiv posting, when verified. `publication_date` is used for citation/datePublished metadata only when appropriate to the cited work; the JuryProbe journal record uses year-only metadata because its exact journal publication date was not independently verified. ModularSQL also uses year-only metadata because its source submission date and identifier month were inconsistent when checked.
+
+The home page is a `CollectionPage`, not a personal profile. Paper pages use `ScholarlyArticle` JSON-LD, ordered author metadata, source links, and downloadable citations. All substantive content is available without JavaScript. JavaScript only enhances citation copying, with a selectable-text/download fallback.
+
+## Research rights and availability
+
+Paper PDFs remain on arXiv and the venue. The site does not redistribute PDFs, private research code, data, or private repository content. OpenRegShift code remains private. JuryProbe public code availability is unverified. ModularSQL links to its verified public repository; this does not claim that reproduction was executed.
+
+No license is assigned here to coauthored research implementations. Public visibility alone does not grant a software reuse license.
