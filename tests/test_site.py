@@ -188,7 +188,8 @@ class SiteTests(unittest.TestCase):
                 self.assertEqual(page.meta['citation_title'], [paper['title']])
                 self.assertEqual(page.meta['citation_author'], paper['authors'])
                 self.assertEqual(page.meta['citation_arxiv_id'], [paper['arxiv_id']])
-                self.assertEqual(page.meta['citation_pdf_url'], [paper['pdf_url']])
+                self.assertNotIn('citation_pdf_url', page.meta)
+                self.assertIn(paper['pdf_url'], page.links)
                 self.assertEqual(page.meta['citation_publication_date'],
                                  [paper['publication_date'] or str(paper['year'])])
                 self.assertNotIn('citation_doi', page.meta)
@@ -380,6 +381,30 @@ class SiteTests(unittest.TestCase):
         jury = next(p for p in PAPERS if p['slug'] == 'juryprobe')
         self.assertIsNone(jury['publication_date'], 'Do not conflate arXiv posting and journal publication dates')
         self.assertEqual(jury['arxiv_submission_date'], '2026-08-20')
+
+    def test_visible_abstract_and_questions_match_structured_data(self):
+        from html import escape
+        for paper in PAPERS:
+            page = self.pages[DOCS / 'papers' / paper['slug'] / 'index.html']
+            self.assertIn('abstract', page.ids)
+            self.assertIn('researcher-questions', page.ids)
+            self.assertIn(escape(paper['abstract']['text'], quote=True), page.source)
+            self.assertEqual(page.jsonld[0]['abstract'], paper['abstract']['text'])
+            self.assertEqual(page.jsonld[0]['dateModified'], paper['page_updated_date'])
+            self.assertIn(paper['abstract']['source_url'], page.links)
+            self.assertEqual(len(paper['contributions']), len(paper['contribution_sources']))
+            self.assertEqual(len(paper['researcher_questions']), 2)
+            self.assertEqual(page.attrs('details'), [], 'Abstract must not require expanding a control')
+            for group in paper['contribution_sources'] + [q['sources'] for q in paper['researcher_questions']]:
+                self.assertTrue(group)
+                for source in group:
+                    self.assertIn(source['url'], page.links)
+                    self.assertTrue(source['url'].startswith(paper['html_url'] + '#'))
+            self.assertGreater(len(paper['abstract']['text'].split()), 200)
+        dynamic = self.pages[DOCS / 'papers/openregshift/index.html'].source
+        self.assertIn('Code is not publicly released.', dynamic)
+        self.assertIn('not a current download or release announcement', dynamic)
+        self.assertNotIn('FAQPage', dynamic)
 
     def test_build_is_reproducible(self):
         def hashes():

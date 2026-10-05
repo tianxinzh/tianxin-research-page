@@ -38,7 +38,75 @@
     "bibtex_provenance": "Conservatively constructed from verified arXiv journal metadata and the OpenReview URL linked in the paper. Not an OpenReview-exported citation; no journal DOI, volume, issue, or page range asserted.",
     "verified_at": "2026-10-05",
     "status_note": "TMLR acceptance verified from arXiv metadata. OpenReview forum is linked by the paper but was not readable during verification.",
-    "arxiv_submission_date": "2026-08-20"
+    "arxiv_submission_date": "2026-08-20",
+    "abstract": {
+      "text": "Panels of inexpensive LLM judges increasingly make accept-or-escalate decisions. In factuality settings, accepting a claim because several reference-free judges agree can create a hidden risk: agreement may reflect shared false-negative blind spots rather than independent evidence. We introduce JuryProbe, an empirical consensus-risk diagnostic for reference-free factuality judge panels, paired with a calibration-based routing policy. JuryProbe estimates consensus risk from a labeled calibration probe using false-negative-only (FN-only) judge correlation and false-consensus lift; when flagged high-risk, reference-free majority accepts are routed to the same judges with trusted references. On audited FEVER corruptions, reference-free panels show correlated false negatives (FN-only correlations 0.402 and 0.368; lifts 3.13x and 18.13x), while unanimous false consensus drops to zero under a trusted-reference best-case diagnostic on both minimal-pair and non-minimal-pair evidence. In flagged settings, the routed policy is by construction equivalent to grounding every reference-free majority accept (verified in 34/34 splits): improvement comes from accept-conditioned grounding, while the diagnostic determines whether to activate it. A fixed, pre-specified rule flags 8-10 of 10 splits across synthetic, benchmark-authored, and scientific families and 0 of 10 on a negative control, where standing down avoids 28% of reference acquisitions at a 0.004 increase in false accepts. False-accept reduction persists under weak BM25 retrieval at substantial coverage cost, while stale stand-down labels require periodic recalibration. JuryProbe provides no formal risk guarantee and does not establish reliable stand-down on natural panels; its supported contribution is an empirical diagnostic of high-risk panel error dependence.",
+      "source_text": "Panels of inexpensive LLM judges increasingly make accept-or-escalate decisions. In factuality settings, accepting a claim because several reference-free judges agree can create a hidden risk: agreement may reflect shared false-negative blind spots rather than independent evidence. We introduce JuryProbe, an empirical consensus-risk diagnostic for reference-free factuality judge panels, paired with a calibration-based routing policy. JuryProbe estimates consensus risk from a labeled calibration probe using false-negative-only (FN-only) judge correlation and false-consensus lift; when flagged high-risk, reference-free majority accepts are routed to the same judges with trusted references. On audited FEVER corruptions, reference-free panels show correlated false negatives (FN-only correlations 0.402 and 0.368; lifts 3.13x and 18.13x), while unanimous false consensus drops to zero under a trusted-reference best-case diagnostic on both minimal-pair and non-minimal-pair evidence. In flagged settings, the routed policy is by construction equivalent to grounding every reference-free majority accept (verified in 34/34 splits): improvement comes from accept-conditioned grounding, while the diagnostic determines whether to activate it. A fixed, pre-specified rule flags 8-10 of 10 splits across synthetic, benchmark-authored, and scientific families and 0 of 10 on a negative control, where standing down avoids 28% of reference acquisitions at a 0.004 increase in false accepts. False-accept reduction persists under weak BM25 retrieval at substantial coverage cost, while stale stand-down labels require periodic recalibration. JuryProbe provides no formal risk guarantee and does not establish reliable stand-down on natural panels; its supported contribution is an empirical diagnostic of high-risk panel error dependence.",
+      "source_url": "https://arxiv.org/abs/2608.20607v2",
+      "version": "2608.20607v2",
+      "notation_note": null,
+      "verified_at": "2026-10-05"
+    },
+    "contribution_sources": [
+      [
+        {
+          "url": "https://arxiv.org/html/2608.20607v2#S3.SS2",
+          "label": "v2 §3.2"
+        },
+        {
+          "url": "https://arxiv.org/html/2608.20607v2#S3.SS4",
+          "label": "v2 §3.4"
+        }
+      ],
+      [
+        {
+          "url": "https://arxiv.org/html/2608.20607v2#S5.T1",
+          "label": "v2 Table 1"
+        }
+      ],
+      [
+        {
+          "url": "https://arxiv.org/html/2608.20607v2#S5.SS3",
+          "label": "v2 §5.3"
+        },
+        {
+          "url": "https://arxiv.org/html/2608.20607v2#S5.T4",
+          "label": "v2 Table 4"
+        }
+      ]
+    ],
+    "researcher_questions": [
+      {
+        "question": "How can agreeing LLM judges still be wrong?",
+        "answer": "Different judges can miss the same factual corruption. JuryProbe measures this shared failure on labeled calibration claims using false-negative correlation and false-consensus lift. It assesses a panel’s risk regime, rather than scoring the safety of each new claim.",
+        "sources": [
+          {
+            "url": "https://arxiv.org/html/2608.20607v2#S3.SS1",
+            "label": "v2 §3.1"
+          },
+          {
+            "url": "https://arxiv.org/html/2608.20607v2#S3.SS2",
+            "label": "v2 §3.2"
+          }
+        ]
+      },
+      {
+        "question": "How does JuryProbe differ from disagreement-based escalation?",
+        "answer": "Disagreement routing cannot catch a corrupted claim accepted unanimously. When calibration flags a panel, JuryProbe rechecks every majority acceptance with references, including unanimous accepts. An unflagged panel is not certified safe.",
+        "sources": [
+          {
+            "url": "https://arxiv.org/html/2608.20607v2#S2.SS4",
+            "label": "v2 §2.4"
+          },
+          {
+            "url": "https://arxiv.org/html/2608.20607v2#S3.SS4",
+            "label": "v2 §3.4"
+          }
+        ]
+      }
+    ],
+    "citation_context": "Relevant when discussing shared false-negative errors in reference-free factuality judge panels, panel-level calibration diagnostics, or accept-conditioned grounded verification. It does not establish that an unflagged panel is safe.",
+    "page_updated_date": "2026-10-05"
   },
   {
     "slug": "modularsql",
@@ -79,7 +147,79 @@
     "bibtex_provenance": "Constructed from verified arXiv metadata; the export endpoint could not be retrieved. Month omitted because the 2609 identifier and source-reported August submission date are inconsistent.",
     "verified_at": "2026-10-05",
     "date_note": "The arXiv record reports 2026-08-26 despite its 2609 identifier; display year only until reconciled.",
-    "arxiv_submission_date": null
+    "arxiv_submission_date": null,
+    "abstract": {
+      "text": "Text-to-SQL systems are increasingly deployed on production databases, where queries that pass benchmark evaluation can still produce results that distort downstream workflows. Standard set-based execution accuracy (Set-EX) collapses duplicate rows and can therefore miss multiplicity errors, including missing DISTINCT, inflated aggregates, and Cartesian-style join explosions. We call this the Multiplicity Blind Spot (MBS) and introduce Multiset-EX, a multiplicity-preserving evaluation criterion that exposes such failures. Across released DeepEye-SQL artifacts from three backbones (Qwen2.5-Coder-32B, Qwen3-Coder-30B-A3B, and Gemma-3-27B) on executable BIRD-Dev N=1532, we find a consistent 5.81--6.79 pp gap between Set-EX and Multiset-EX. The gap is not specific to DeepEye-SQL: it persists on released DAIL-SQL+GPT-4 (5.22 pp) and BIRD GPT-3.5-turbo (3.39 pp) predictions. We further introduce ModularSQL, a lightweight post-selection runtime guardrail that probes executed results for multiplicity anomalies and applies deterministic patches or low-cost LLM rescue only to flagged queries. Integrated with DeepEye-SQL using Qwen3-Coder, ModularSQL preserves Set-EX at 72.06% while improving Multiset-EX from 65.86% to 67.75% (+1.89 pp). It flags 77 high-risk anomalies, while adding only $0.0076 in total LLM cost and 120 ms amortized latency per query. Cross-pipeline evaluation shows that the candidate-free detector and deterministic patches also transfer to independently released prediction sets. Overall, these results show that benchmark accuracy does not necessarily imply execution-safe SQL, and that lightweight, multiplicity-aware runtime guardrails can narrow this gap with modest computational overhead.",
+      "source_text": "Text-to-SQL systems are increasingly deployed on production databases, where queries that pass benchmark evaluation can still produce results that distort downstream workflows. Standard set-based execution accuracy (Set-EX) collapses duplicate rows and can therefore miss multiplicity errors, including missing DISTINCT, inflated aggregates, and Cartesian-style join explosions. We call this the Multiplicity Blind Spot (MBS) and introduce Multiset-EX, a multiplicity-preserving evaluation criterion that exposes such failures. Across released DeepEye-SQL artifacts from three backbones (Qwen2.5-Coder-32B, Qwen3-Coder-30B-A3B, and Gemma-3-27B) on executable BIRD-Dev N=1532, we find a consistent 5.81--6.79 pp gap between Set-EX and Multiset-EX. The gap is not specific to DeepEye-SQL: it persists on released DAIL-SQL+GPT-4 (5.22 pp) and BIRD GPT-3.5-turbo (3.39 pp) predictions. We further introduce ModularSQL, a lightweight post-selection runtime guardrail that probes executed results for multiplicity anomalies and applies deterministic patches or low-cost LLM rescue only to flagged queries. Integrated with DeepEye-SQL using Qwen3-Coder, ModularSQL preserves Set-EX at 72.06% while improving Multiset-EX from 65.86% to 67.75% (+1.89 pp). It flags 77 high-risk anomalies, while adding only $0.0076 in total LLM cost and 120 ms amortized latency per query. Cross-pipeline evaluation shows that the candidate-free detector and deterministic patches also transfer to independently released prediction sets. Overall, these results show that benchmark accuracy does not necessarily imply execution-safe SQL, and that lightweight, multiplicity-aware runtime guardrails can narrow this gap with modest computational overhead.",
+      "source_url": "https://arxiv.org/abs/2609.29573v1",
+      "version": "2609.29573v1",
+      "notation_note": null,
+      "verified_at": "2026-10-05"
+    },
+    "contribution_sources": [
+      [
+        {
+          "url": "https://arxiv.org/html/2609.29573v1#S2.SS2",
+          "label": "v1 §2.2"
+        },
+        {
+          "url": "https://arxiv.org/html/2609.29573v1#S3",
+          "label": "v1 §3"
+        }
+      ],
+      [
+        {
+          "url": "https://arxiv.org/html/2609.29573v1#S4.T1",
+          "label": "v1 Table 1"
+        }
+      ],
+      [
+        {
+          "url": "https://arxiv.org/html/2609.29573v1#S4.T3",
+          "label": "v1 Table 3"
+        },
+        {
+          "url": "https://arxiv.org/html/2609.29573v1#S4.SS5",
+          "label": "v1 §4.5"
+        },
+        {
+          "url": "https://arxiv.org/html/2609.29573v1#S4.SS6",
+          "label": "v1 §4.6"
+        }
+      ]
+    ],
+    "researcher_questions": [
+      {
+        "question": "What can set-based SQL evaluation miss?",
+        "answer": "Two query outputs can contain the same distinct rows but different duplicate counts. BIRD’s set-collapsing comparison can hide that difference; Multiset-EX preserves it. This limitation does not apply to every Text-to-SQL evaluator: Spider’s test-suite evaluator already compares multisets.",
+        "sources": [
+          {
+            "url": "https://arxiv.org/html/2609.29573v1#S2.SS2",
+            "label": "v1 §2.2"
+          }
+        ]
+      },
+      {
+        "question": "What does ModularSQL need at runtime?",
+        "answer": "The detector uses the selected SQL and its database result. Full LLM rescue also needs upstream candidates; without them, only the detector and deterministic patches apply. An anomaly is a review signal, not proof of an error. Normal-looking semantic errors can pass undetected.",
+        "sources": [
+          {
+            "url": "https://arxiv.org/html/2609.29573v1#S3.SS1",
+            "label": "v1 §3.1"
+          },
+          {
+            "url": "https://arxiv.org/html/2609.29573v1#S3.SS3",
+            "label": "v1 §3.3"
+          },
+          {
+            "url": "https://arxiv.org/html/2609.29573v1#S4.SS3",
+            "label": "v1 §4.3"
+          }
+        ]
+      }
+    ],
+    "citation_context": "Relevant when discussing duplicate-sensitive Text-to-SQL evaluation, the limits of set-collapsing execution accuracy, or selective post-selection runtime intervention. The reported experiments use BIRD-Dev and SQLite.",
+    "page_updated_date": "2026-10-05"
   },
   {
     "slug": "openregshift",
@@ -118,6 +258,78 @@
     "bibtex": "@misc{zhou2026dynamicensembling,\n  title={{When Does Dynamic Ensembling Pay Off? Diagnosing Regionwise Gains in Regression under Distribution Shift}},\n  author={Zhou, Tianxin and Lin, Ruixi},\n  year={2026},\n  eprint={2608.18330},\n  archivePrefix={arXiv},\n  primaryClass={cs.LG},\n  url={https://arxiv.org/abs/2608.18330}\n}",
     "bibtex_provenance": "Constructed from verified arXiv metadata; the export endpoint could not be retrieved.",
     "verified_at": "2026-10-05",
-    "arxiv_submission_date": "2026-08-18"
+    "arxiv_submission_date": "2026-08-18",
+    "abstract": {
+      "text": "Whether input-dependent (\"dynamic\") combination of a regression model pool beats the best static blend depends on the shift and is rarely known before deployment. Can a small labeled target-domain probe tell us when reallocating trust across regions of the input space will pay off? We answer this with D̂_CF5, which estimates from the probe the cross-fitted gain of the regionwise convex combination over the best static convex blend: the realizable value of deciding, region by region, whom to trust. Across a frozen suite of 12 dataset-shift pairs (spatial, temporal, domain, feature-cluster), D̂_CF5 predicts realized regionwise test gains with dataset-level Spearman +0.98 (95% CI [+0.83, +1.00]; p = 5 × 10⁻⁵), including two cases overturning preregistered expectations. The relationship holds in a 16-pair sensitivity analysis (Spearman +0.83), whereas alternative probe diagnostics reach at most +0.66. This contrast isolates regional trust reallocation: correlation is +0.98 for regionwise-convex gain, but +0.01 for smooth covariate-dependent stacking after affine correction. A controlled generator shows dynamic gains arise from the interaction of shift heterogeneity and local competence, increase with shift severity, and become realizable between 128 and 256 probe labels in the tested grid. The Probe-Validated Ensemble Selector chooses among a static affine stacker and dynamic realizers, deploying a candidate only when a held-out lower confidence bound clears the static-convex floor. In a preregistered prospective batch, it matched or improved the floor in all 12 runs; two deployments reduced test risk by 11% and 16%, while the gate rejected a candidate whose un-gated deployment incurred >30× the static loss. We release OpenRegShift, a reproducible evaluation harness for regression ensembles under distribution shift.",
+      "source_text": "Whether input-dependent (\"dynamic\") combination of a regression model pool beats the best static blend depends on the shift and is rarely known before deployment. Can a small labeled target-domain probe tell us when reallocating trust across regions of the input space will pay off? We answer this with $\\widehat{D}_{\\mathrm{CF5}}$, which estimates from the probe the cross-fitted gain of the regionwise convex combination over the best static convex blend: the realizable value of deciding, region by region, whom to trust. Across a frozen suite of 12 dataset-shift pairs (spatial, temporal, domain, feature-cluster), $\\widehat{D}_{\\mathrm{CF5}}$ predicts realized regionwise test gains with dataset-level Spearman $+0.98$ (95% CI $[+0.83, +1.00]$; $p=5\\times10^{-5}$), including two cases overturning preregistered expectations. The relationship holds in a 16-pair sensitivity analysis (Spearman $+0.83$), whereas alternative probe diagnostics reach at most $+0.66$. This contrast isolates regional trust reallocation: correlation is $+0.98$ for regionwise-convex gain, but $+0.01$ for smooth covariate-dependent stacking after affine correction. A controlled generator shows dynamic gains arise from the interaction of shift heterogeneity and local competence, increase with shift severity, and become realizable between 128 and 256 probe labels in the tested grid. The Probe-Validated Ensemble Selector chooses among a static affine stacker and dynamic realizers, deploying a candidate only when a held-out lower confidence bound clears the static-convex floor. In a preregistered prospective batch, it matched or improved the floor in all 12 runs; two deployments reduced test risk by 11% and 16%, while the gate rejected a candidate whose un-gated deployment incurred $>30\\times$ the static loss. We release OpenRegShift, a reproducible evaluation harness for regression ensembles under distribution shift.",
+      "source_url": "https://arxiv.org/abs/2608.18330v1",
+      "version": "2608.18330v1",
+      "notation_note": "Mathematical notation is rendered as plain text; wording is unchanged.",
+      "verified_at": "2026-10-05"
+    },
+    "contribution_sources": [
+      [
+        {
+          "url": "https://arxiv.org/html/2608.18330v1#S2",
+          "label": "v1 §2"
+        },
+        {
+          "url": "https://arxiv.org/html/2608.18330v1#S6",
+          "label": "v1 §6"
+        }
+      ],
+      [
+        {
+          "url": "https://arxiv.org/html/2608.18330v1#S4.SS1",
+          "label": "v1 §4.1"
+        },
+        {
+          "url": "https://arxiv.org/html/2608.18330v1#S4.SS5",
+          "label": "v1 §4.5"
+        }
+      ],
+      [
+        {
+          "url": "https://arxiv.org/html/2608.18330v1#S6.T3",
+          "label": "v1 Table 3"
+        },
+        {
+          "url": "https://arxiv.org/html/2608.18330v1#S6",
+          "label": "v1 §6"
+        }
+      ]
+    ],
+    "researcher_questions": [
+      {
+        "question": "How many target labels does this protocol use?",
+        "answer": "The main protocol uses 512 labeled target observations: 205 for diagnosis, 215 for fitting candidate combinations and 92 for validation. Base regressors stay frozen. Target test data are reserved for final evaluation, so this is not an unlabeled adaptation method.",
+        "sources": [
+          {
+            "url": "https://arxiv.org/html/2608.18330v1#S3.SS1",
+            "label": "v1 §3.1"
+          },
+          {
+            "url": "https://arxiv.org/html/2608.18330v1#S3.T1",
+            "label": "v1 Table 1"
+          }
+        ]
+      },
+      {
+        "question": "Does a low diagnostic value rule out all dynamic ensembles?",
+        "answer": "No. D_CF5 targets regional convex reweighting. In two Seoul Bike runs, a separate held-out selector accepted smooth covariate-dependent stacking despite a near-zero regional diagnostic. The selector does not take D_CF5 as input.",
+        "sources": [
+          {
+            "url": "https://arxiv.org/html/2608.18330v1#S4.SS4",
+            "label": "v1 §4.4"
+          },
+          {
+            "url": "https://arxiv.org/html/2608.18330v1#S6",
+            "label": "v1 §6"
+          }
+        ]
+      }
+    ],
+    "citation_context": "Relevant when discussing probe-based diagnosis of regional convex ensemble gains under distribution shift, or held-out validation of frozen-model combinations. The diagnostic is not a universal predictor of dynamic-ensemble gains.",
+    "page_updated_date": "2026-10-05"
   }
 ]

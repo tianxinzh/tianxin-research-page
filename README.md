@@ -62,3 +62,13 @@ The home page is a `CollectionPage`, not a personal profile. Paper pages use `Sc
 Paper PDFs remain on arXiv and the venue. The site does not redistribute PDFs, private research code, data, or private repository content. OpenRegShift code remains private. JuryProbe public code availability is unverified. ModularSQL links to its verified public repository; this does not claim that reproduction was executed.
 
 No license is assigned here to coauthored research implementations. Public visibility alone does not grant a software reuse license.
+
+## Source-led discovery and Scholar metadata
+
+Paper pages include the complete author-written abstract from a versioned arXiv abstract record (which may differ from the full-paper abstract), two concise researcher questions, and version/section/table links next to reported findings. The same visible abstract appears in ScholarlyArticle JSON-LD. OpenRegShift's versioned release sentence is accompanied by the current non-public code status.
+
+The papers are coauthored by the site owner. Their arXiv non-exclusive distribution license is not a general third-party reuse license; confirm author/publisher permission before republishing abstracts if rights have changed. No PDFs or private implementations are mirrored.
+
+We omit `citation_pdf_url` because the PDFs live on arXiv, not in the same subdirectory as the local HTML abstracts required by [Google Scholar's full-text association guidance](https://scholar.google.com/intl/en/scholar/inclusion.html). Visible original PDF links are retained. Title, author, publication-year, journal (where verified), and abstract-page metadata remain. This does not promise Scholar inclusion, AI citation, or ranking improvements. No special AI-only files or FAQ rich-result claims are added.
+
+`page_updated_date` records a substantial page-content change, not the time a build runs. The sitemap's existing 2026-10-05 lastmod remains truthful for this same-day content update. Update these dates only when the corresponding content changes; keep publication dates separate.
