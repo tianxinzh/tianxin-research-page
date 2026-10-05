@@ -406,6 +406,19 @@ class SiteTests(unittest.TestCase):
         self.assertIn('not a current download or release announcement', dynamic)
         self.assertNotIn('FAQPage', dynamic)
 
+    def test_home_visible_author_credit_and_established_profiles(self):
+        page = self.pages[DOCS / 'index.html']
+        self.assertIn('authors', page.ids)
+        self.assertIn('authors-title', page.ids)
+        for name in ('Tianxin Zhou', 'Ruixi Lin'):
+            self.assertIn('<strong>' + name + '</strong>', page.source)
+        self.assertIn('Tianxin Zhou on Google Scholar', page.source)
+        self.assertIn('https://scholar.google.com/citations?user=hkDNs4MAAAAJ&hl=en', page.links)
+        self.assertIn('https://github.com/tianxinzh', page.links)
+        self.assertEqual(page.jsonld[0]['@type'], 'CollectionPage')
+        self.assertNotIn('orcid.org', page.source)
+        self.assertNotIn('mailto:', page.source)
+
     def test_build_is_reproducible(self):
         def hashes():
             return {p.relative_to(DOCS).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
