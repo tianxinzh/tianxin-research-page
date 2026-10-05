@@ -1,0 +1,120 @@
+[
+  {
+    "slug": "juryprobe",
+    "short_name": "JuryProbe",
+    "title": "JuryProbe: An Empirical Consensus-Risk Diagnostic for Routing Reference-Free Factuality Judge Panels to Grounded Verification",
+    "authors": [
+      "Tianxin Zhou",
+      "Ruixi Lin"
+    ],
+    "year": 2026,
+    "publication_date": "2026-08-20",
+    "updated_date": "2026-08-27",
+    "venue": "Transactions on Machine Learning Research",
+    "status": "TMLR 2026",
+    "arxiv_id": "2608.20607",
+    "arxiv_version": "v2",
+    "paper_url": "https://arxiv.org/abs/2608.20607",
+    "pdf_url": "https://arxiv.org/pdf/2608.20607",
+    "html_url": "https://arxiv.org/html/2608.20607v2",
+    "review_url": "https://openreview.net/forum?id=dgBczhxcZY",
+    "code_url": null,
+    "summary": "JuryProbe tests whether agreement among reference-free factuality judges hides shared errors, then uses calibration evidence to decide when accepted claims need grounded verification.",
+    "contributions": [
+      "A labeled calibration probe measures correlated missed corruptions and excess unanimous false acceptance. When panel-level risk is flagged, every reference-free majority acceptance is rechecked by the same judges with references.",
+      "On Number and Entity corruptions, false-negative correlations over all corrupted claims were 0.402 and 0.368. False-consensus lifts on GPT-4o-detectable subsets were 3.13× and 18.13×, respectively.",
+      "All 34 flagged splits matched the Ground-All-Accepts policy. On a constructed negative control, stand-down avoided reference acquisition for about 28% of deployment claims, with a 0.004 absolute false-accept-rate increase versus Ground-All-Accepts."
+    ],
+    "limitations": [
+      "The diagnostic offers no formal risk guarantee and does not establish reliable stand-down for natural panels.",
+      "Trusted-reference experiments are best-case diagnostics. Weak retrieval reduces true-accept coverage, and distribution shifts require recalibration."
+    ],
+    "sources": [
+      "https://arxiv.org/abs/2608.20607",
+      "https://arxiv.org/html/2608.20607v2",
+      "https://arxiv.org/bibtex/2608.20607"
+    ],
+    "bibtex": "@article{zhou2026juryprobe,\n  title={{JuryProbe: An Empirical Consensus-Risk Diagnostic for Routing Reference-Free Factuality Judge Panels to Grounded Verification}},\n  author={Zhou, Tianxin and Lin, Ruixi},\n  journal={Transactions on Machine Learning Research},\n  year={2026},\n  url={https://openreview.net/forum?id=dgBczhxcZY}\n}",
+    "bibtex_provenance": "Conservatively constructed from verified arXiv journal metadata and the OpenReview URL linked in the paper. Not an OpenReview-exported citation; no journal DOI, volume, issue, or page range asserted.",
+    "verified_at": "2026-10-05",
+    "status_note": "TMLR acceptance verified from arXiv metadata. OpenReview forum is linked by the paper but was not readable during verification."
+  },
+  {
+    "slug": "modularsql",
+    "short_name": "ModularSQL",
+    "title": "ModularSQL: A Runtime Guardrail for the Multiplicity Blind Spot in Text-to-SQL",
+    "authors": [
+      "Tianxin Zhou",
+      "Ruixi Lin"
+    ],
+    "year": 2026,
+    "publication_date": null,
+    "updated_date": null,
+    "venue": "arXiv preprint",
+    "status": "arXiv preprint · 2026",
+    "arxiv_id": "2609.29573",
+    "arxiv_version": "v1",
+    "paper_url": "https://arxiv.org/abs/2609.29573",
+    "pdf_url": "https://arxiv.org/pdf/2609.29573",
+    "html_url": "https://arxiv.org/html/2609.29573v1",
+    "review_url": null,
+    "code_url": "https://github.com/Ruixi1313/ModularSQL",
+    "summary": "ModularSQL checks executed SQL results for multiplicity problems that set-collapsing evaluation can miss. It combines a duplicate-preserving metric with selective runtime intervention.",
+    "contributions": [
+      "Multiset-EX retains duplicate counts while ignoring row order. A post-selection detector triggers deterministic DISTINCT patches or candidate-based LLM rescue.",
+      "Across three released DeepEye-SQL backbones, Set-EX exceeded Multiset-EX by 5.81–6.79 percentage points on 1,532 executable BIRD-Dev queries.",
+      "The Qwen3-Coder reproduction improved Multiset-EX from 65.86% to 67.75%, preserving 72.06% Set-EX. It flagged 77 anomalies, with $0.0076 total additional LLM cost and 120 ms amortized overhead per query."
+    ],
+    "limitations": [
+      "Experiments cover BIRD-Dev with SQLite. Full candidate-based rescue was tested only with the DeepEye-SQL reproduction; candidate-free components transferred to two other released prediction sets.",
+      "Deterministic patches address DISTINCT changes, not general aggregation or join repair. No additional full repair-round comparison was performed."
+    ],
+    "sources": [
+      "https://arxiv.org/abs/2609.29573",
+      "https://arxiv.org/html/2609.29573v1",
+      "https://github.com/Ruixi1313/ModularSQL"
+    ],
+    "bibtex": "@misc{zhou2026modularsql,\n  title={{ModularSQL: A Runtime Guardrail for the Multiplicity Blind Spot in Text-to-SQL}},\n  author={Zhou, Tianxin and Lin, Ruixi},\n  year={2026},\n  eprint={2609.29573},\n  archivePrefix={arXiv},\n  primaryClass={cs.CL},\n  url={https://arxiv.org/abs/2609.29573}\n}",
+    "bibtex_provenance": "Constructed from verified arXiv metadata; the export endpoint could not be retrieved. Month omitted because the 2609 identifier and source-reported August submission date are inconsistent.",
+    "verified_at": "2026-10-05",
+    "date_note": "The arXiv record reports 2026-08-26 despite its 2609 identifier; display year only until reconciled."
+  },
+  {
+    "slug": "openregshift",
+    "short_name": "OpenRegShift",
+    "title": "When Does Dynamic Ensembling Pay Off? Diagnosing Regionwise Gains in Regression under Distribution Shift",
+    "authors": [
+      "Tianxin Zhou",
+      "Ruixi Lin"
+    ],
+    "year": 2026,
+    "publication_date": "2026-08-18",
+    "updated_date": null,
+    "venue": "arXiv preprint",
+    "status": "arXiv preprint · 2026",
+    "arxiv_id": "2608.18330",
+    "arxiv_version": "v1",
+    "paper_url": "https://arxiv.org/abs/2608.18330",
+    "pdf_url": "https://arxiv.org/pdf/2608.18330",
+    "html_url": "https://arxiv.org/html/2608.18330v1",
+    "review_url": null,
+    "code_url": null,
+    "summary": "This study asks when a small labeled target-domain probe can identify useful regional reweighting of a frozen regression-model pool under distribution shift.",
+    "contributions": [
+      "D_CF5 cross-fits the risk difference between regional and global convex blends. A separate Probe-Validated Ensemble Selector compares candidates against a static-convex floor using held-out validation; the selector does not use D_CF5 as an input.",
+      "The diagnostic correlated with realized regional gains at Spearman +0.98 across 12 dataset-shift pairs and +0.83 in a 16-pair sensitivity analysis.",
+      "The prospective selector matched or improved its static floor in all 12 runs. Two deployments reduced test risk by 11% and 16%."
+    ],
+    "limitations": [
+      "The diagnostic targets regional convex reweighting, not every dynamic adaptation mechanism. It requires labeled target observations.",
+      "The gate uses asymptotic validation, not a finite-sample guarantee. Evidence primarily concerns tabular regression with frozen source models and within-project preregistration."
+    ],
+    "sources": [
+      "https://arxiv.org/abs/2608.18330",
+      "https://arxiv.org/html/2608.18330v1"
+    ],
+    "bibtex": "@misc{zhou2026dynamicensembling,\n  title={{When Does Dynamic Ensembling Pay Off? Diagnosing Regionwise Gains in Regression under Distribution Shift}},\n  author={Zhou, Tianxin and Lin, Ruixi},\n  year={2026},\n  eprint={2608.18330},\n  archivePrefix={arXiv},\n  primaryClass={cs.LG},\n  url={https://arxiv.org/abs/2608.18330}\n}",
+    "bibtex_provenance": "Constructed from verified arXiv metadata; the export endpoint could not be retrieved.",
+    "verified_at": "2026-10-05"
+  }
+]
