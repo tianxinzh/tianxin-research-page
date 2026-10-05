@@ -1,6 +1,6 @@
 # Tianxin Research Page
 
-A publication-focused research collection for **https://tianxinzh.github.io/tianxin-research-page/**. Each paper has a stable landing page with its question, methods, reported findings, limitations, primary sources, code-availability statement, machine-readable citation metadata, and BibTeX downloads.
+A publication-focused research collection for **https://research.searcher.cloud/**. Each paper has a stable landing page with its question, methods, reported findings, limitations, primary sources, code-availability statement, machine-readable citation metadata, and BibTeX downloads.
 
 Repository: https://github.com/tianxinzh/tianxin-research-page
 
@@ -15,7 +15,11 @@ python -m unittest discover -s tests -v
 
 Commit source and generated `docs/` output together. GitHub Pages publishes `main`, `/docs`, using **Settings → Pages → Deploy from a branch**. No Actions credentials, third-party scripts, external fonts, or analytics are required.
 
-The default build uses the GitHub project URL as the primary, indexable canonical. HTML, navigation, assets, citation downloads, social metadata, JSON-LD, and sitemap URLs all include `/tianxin-research-page`. Normal pages request `index,follow`; the 404 page requests `noindex,follow`. Search indexing and inclusion in AI answers are not guaranteed.
+The default build reads the custom domain from the tracked `docs/CNAME` file. With `research.searcher.cloud` configured, assets, navigation, and citation downloads are page-relative. The same generated pages work at the domain root or under a project path without rebuilding. Canonical/social metadata, JSON-LD, and sitemap URLs remain absolute and use the configured domain. Builds preserve the domain binding. If `docs/CNAME` is intentionally removed for a separate migration, canonical metadata falls back to the GitHub project URL and `/tianxin-research-page` prefix.
+
+The custom 404 page is the intentional exception: GitHub can serve it at any missing URL depth, so its assets and recovery links use the configured absolute canonical origin. Directory URLs should retain their trailing slash (GitHub Pages redirects directory requests accordingly). No `<base>` element is used.
+
+Normal pages request `index,follow`; the 404 page requests `noindex,follow`. Search indexing and inclusion in AI answers are not guaranteed.
 
 For an isolated build:
 
@@ -23,29 +27,27 @@ For an isolated build:
 python scripts/build.py --output-dir /tmp/tianxin-research-check
 ```
 
-To preview with the real project path, build into a directory of that name and serve its parent:
+To preview the configured custom-domain layout:
 
 ```sh
-python scripts/build.py --output-dir /tmp/research-preview/tianxin-research-page
+python scripts/build.py --output-dir /tmp/research-preview
 python -m http.server 8765 --directory /tmp/research-preview
-# Open http://localhost:8765/tianxin-research-page/
+# Open http://localhost:8765/
 ```
 
 ## Stable paper pages
 
-- `/tianxin-research-page/papers/juryprobe/`
-- `/tianxin-research-page/papers/modularsql/`
-- `/tianxin-research-page/papers/openregshift/`
+- `/papers/juryprobe/`
+- `/papers/modularsql/`
+- `/papers/openregshift/`
 
-The repository was renamed from `tianxinzh.github.io`, preserving its history. GitHub redirects repository links, but [Pages URLs are an exception to repository rename redirects](https://docs.github.com/en/repositories/creating-and-managing-repositories/renaming-a-repository). Use the project URL above; do not assume the former root site or its paper paths redirect. Avoid recreating the old repository name, which would remove GitHub's repository redirect.
+The repository was renamed from `tianxinzh.github.io`, preserving its history. GitHub redirects repository links, but [Pages URLs are an exception to repository rename redirects](https://docs.github.com/en/repositories/creating-and-managing-repositories/renaming-a-repository). Avoid recreating the old repository name, which would remove GitHub's repository redirect.
 
-## Custom domains
+## Custom domain
 
-This site does not depend on a separately registered domain. No custom domain is configured, and builds remove a stale `docs/CNAME`. DNS is not modified by the builder.
+GitHub Pages is configured for `research.searcher.cloud`, recorded in `docs/CNAME`. The builder reads and preserves that file; do not remove it during routine builds. DNS and GitHub security settings are not modified by the builder. `robots.txt` and `sitemap.xml` are served at the custom-domain root.
 
-A future custom-domain change requires a separate, approved migration, ownership/DNS verification, changes to the URL configuration, and live HTTPS checks. Binding a custom domain to GitHub Pages normally redirects the GitHub Pages address to that domain, so it is not an independent fallback for an expired domain. Keep the current configuration for a domain-renewal-independent address.
-
-The included `robots.txt` records the project sitemap, but crawlers request robots.txt at the host root; a project-directory copy cannot set host-wide rules. The indexability controls on each HTML page and the canonical sitemap are the operative site-level metadata. Submit the project sitemap to a verified search-console property if one is configured separately.
+Binding a custom domain normally redirects the GitHub Pages address to that domain, so it is not an independent fallback for an expired domain. A future migration requires checking the domain binding, DNS, generated URLs, and live HTTPS together.
 
 ## Editing papers
 

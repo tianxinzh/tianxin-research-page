@@ -19,8 +19,8 @@ import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / 'docs'
-PREFIX = '/tianxin-research-page'
-BASE = 'https://tianxinzh.github.io' + PREFIX
+PREFIX = ''
+BASE = 'https://research.searcher.cloud'
 PAPERS = json.loads((ROOT / 'content/papers.json').read_text())
 
 
@@ -116,7 +116,7 @@ class SiteTests(unittest.TestCase):
 
     def test_expected_publication_files(self):
         expected = {
-            '.nojekyll', 'index.html', '404.html', 'robots.txt',
+            '.nojekyll', 'CNAME', 'index.html', '404.html', 'robots.txt',
             'sitemap.xml', 'assets/favicon.svg', 'assets/site.js',
             'assets/style.css', 'citations/index.html',
             'citations/publications.bib', 'sources/index.html',
@@ -126,7 +126,7 @@ class SiteTests(unittest.TestCase):
                              f"citations/{paper['slug']}.bib"})
         actual = {p.relative_to(DOCS).as_posix() for p in DOCS.rglob('*') if p.is_file()}
         self.assertEqual(actual, expected, 'Unexpected/missing public files; review for leaks or stale output')
-        self.assertFalse((DOCS / 'CNAME').exists())
+        self.assertEqual((DOCS / 'CNAME').read_text().strip(), 'research.searcher.cloud')
 
     def test_internal_links_and_fragments(self):
         for page in self.pages.values():
@@ -317,13 +317,13 @@ class SiteTests(unittest.TestCase):
                 light, dark = sorted([luminance(palette[fg]), luminance(palette[bg])], reverse=True)
                 self.assertGreaterEqual((light + .05) / (dark + .05), 4.5, f'{fg} on {bg}')
 
-    def test_default_build_removes_stale_domain_and_is_indexable(self):
+    def test_default_build_preserves_configured_domain_and_is_indexable(self):
         with tempfile.TemporaryDirectory() as folder:
             output = Path(folder)
             (output / 'CNAME').write_text('obsolete.example\n')
             subprocess.run([sys.executable, str(ROOT / 'scripts/build.py'),
                             '--output-dir', str(output)], check=True, stdout=subprocess.PIPE)
-            self.assertFalse((output / 'CNAME').exists())
+            self.assertEqual((output / 'CNAME').read_bytes(), (DOCS / 'CNAME').read_bytes())
             for path in output.rglob('*.html'):
                 page = HTML(path)
                 relative = '/' + path.relative_to(output).as_posix()
@@ -332,19 +332,25 @@ class SiteTests(unittest.TestCase):
                 self.assertEqual(canonical, [BASE + relative])
                 expected = 'noindex,follow' if relative == '/404.html' else 'index,follow'
                 self.assertEqual(page.meta['robots'], [expected])
-                self.assertNotIn('searcher.cloud', page.source)
+                self.assertNotIn('https://tianxinzh.github.io/tianxin-research-page', page.source)
 
-    def test_project_path_covers_every_internal_resource(self):
+    def test_relative_urls_are_portable_under_root_and_project_path(self):
         for page in self.pages.values():
+            self.assertEqual(page.attrs('base'), [], 'A base element breaks portability')
             for link in page.links:
-                if link.startswith('/'):
-                    self.assertTrue(link.startswith(PREFIX + '/'), (page.public_path, link))
-                    self.assertFalse(link.startswith(PREFIX + PREFIX), link)
-            for tag in ('script', 'link'):
-                for attrs in page.attrs(tag):
-                    resource = attrs.get('src', attrs.get('href', ''))
-                    if '/assets/' in resource:
-                        self.assertTrue(resource.startswith(PREFIX + '/assets/'))
+                url = urlsplit(link)
+                if page.public_path == '/404.html':
+                    continue  # Unknown request depth requires absolute recovery URLs.
+                self.assertFalse(link.startswith('/'), (page.public_path, link))
+                if url.scheme or url.netloc or link.startswith('#'):
+                    continue
+                for prefix in ('', '/tianxin-research-page'):
+                    resolved = urlsplit(urljoin('https://preview.example' + prefix + page.public_path, link))
+                    self.assertTrue(resolved.path.startswith(prefix + '/'))
+                    dest = DOCS / unquote(resolved.path[len(prefix):]).lstrip('/')
+                    if dest.is_dir():
+                        dest /= 'index.html'
+                    self.assertTrue(dest.is_file(), (page.public_path, link, prefix))
             if page.meta.get('citation_abstract_html_url'):
                 self.assertEqual(page.meta['citation_abstract_html_url'], [BASE + page.public_path])
 
@@ -360,7 +366,7 @@ class SiteTests(unittest.TestCase):
             self.assertEqual(item['position'], position)
             self.assertEqual(item['url'], BASE + '/papers/' + paper['slug'] + '/')
             self.assertEqual(item['name'], paper['title'])
-        for text in ('ProfilePage', 'author-name', 'searcher.cloud', 'Tianxin Zhou home'):
+        for text in ('ProfilePage', 'author-name', 'Tianxin Zhou home'):
             self.assertNotIn(text, page.source)
         self.assertIn('Publication collection', page.source)
         self.assertNotIn('<h1 id="collection-title">Tianxin', page.source)
@@ -368,7 +374,7 @@ class SiteTests(unittest.TestCase):
     def test_brand_and_dates_are_not_personal_homepage_metadata(self):
         for page in self.pages.values():
             self.assertEqual(page.meta['og:site_name'], ['Tianxin Research Page'])
-            self.assertNotIn('searcher.cloud', page.source)
+            self.assertNotIn('https://tianxinzh.github.io/tianxin-research-page', page.source)
             self.assertNotIn('ProfilePage', page.source)
             self.assertNotIn('meta name="author" content="Tianxin Zhou"', page.source)
         jury = next(p for p in PAPERS if p['slug'] == 'juryprobe')

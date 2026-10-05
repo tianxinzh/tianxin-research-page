@@ -2,7 +2,7 @@
 """Build a dependency-free, crawlable academic site for GitHub Pages."""
 from pathlib import Path
 from html import escape
-import argparse, json, re, shutil
+import argparse, json, posixpath, re, shutil
 ROOT=Path(__file__).resolve().parents[1]
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--output-dir', type=Path,
@@ -11,8 +11,14 @@ args=parser.parse_args()
 OUT=args.output_dir.resolve() if args.output_dir else ROOT/'docs'
 SITE_NAME='Tianxin Research Page'
 REPOSITORY='https://github.com/tianxinzh/tianxin-research-page'
-PREFIX='/tianxin-research-page'
-BASE='https://tianxinzh.github.io'+PREFIX
+# GitHub Pages stores the user-selected custom domain in this tracked file.
+# Derive URLs from it so rebuilding never removes or overwrites that binding.
+CNAME=ROOT/'docs/CNAME'
+DOMAIN=CNAME.read_text().strip() if CNAME.exists() else ''
+if DOMAIN and not re.fullmatch(r'[A-Za-z0-9](?:[A-Za-z0-9.-]*[A-Za-z0-9])?', DOMAIN):
+ raise ValueError('docs/CNAME must contain one hostname, without a scheme or path')
+PREFIX='' if DOMAIN else '/tianxin-research-page'
+BASE='https://'+DOMAIN if DOMAIN else 'https://tianxinzh.github.io'+PREFIX
 ROBOTS='index,follow'
 VERIFIED='2026-10-05'
 PAPERS=json.loads((ROOT/'content/papers.json').read_text())
@@ -20,10 +26,20 @@ SCHOLAR='https://scholar.google.com/citations?user=hkDNs4MAAAAJ&hl=en'
 AUTHOR={'@type':'Person','name':'Tianxin Zhou','sameAs':[SCHOLAR,'https://github.com/tianxinzh']}
 def e(s): return escape(str(s),quote=True)
 def write(path,text):
- # Root-relative template links are site-relative, including assets and downloads.
- # Keep fragments/external links unchanged, and apply the project prefix once.
+ # Page-relative links make the same output work at a domain root or project path.
+ # A 404 document can be served at an arbitrary depth, so its recovery links
+ # and assets must instead use the configured absolute canonical origin.
  if str(path).endswith('.html'):
-  text=re.sub(r'(\b(?:href|src)=")/(?!/)', lambda m:m.group(1)+PREFIX+'/', text)
+  def relative_link(match):
+   target=match.group(2)
+   if str(path)=='404.html':
+    return match.group(1)+BASE+target+'"'
+   pathname, sep, fragment=target.partition('#')
+   relative=posixpath.relpath(pathname.lstrip('/') or '.', posixpath.dirname(str(path)) or '.')
+   if pathname.endswith('/'):
+    relative+='/'
+   return match.group(1)+relative+(sep+fragment if sep else '')+'"'
+  text=re.sub(r'(\b(?:href|src)=")(/(?!/)[^"]*)"', relative_link, text)
  p=OUT/path; p.parent.mkdir(parents=True,exist_ok=True); p.write_text(text,encoding='utf-8')
 def ul(items): return '<ul>'+''.join('<li>'+e(x)+'</li>' for x in items)+'</ul>'
 def link(href,label,cls=''): return f'<a href="{e(href)}"'+(f' class="{e(cls)}"' if cls else '')+'>'+label+'</a>'
@@ -83,6 +99,10 @@ write('404.html',page('Page Not Found | '+SITE_NAME,'Find the research papers an
 write('robots.txt','User-agent: *\nAllow: /\n\nSitemap: '+BASE+'/sitemap.xml\n')
 write('sitemap.xml','<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+''.join(f'  <url><loc>{BASE+p}</loc><lastmod>{VERIFIED}</lastmod></url>\n' for p in paths)+'</urlset>\n')
 write('.nojekyll','')
-# Never carry a custom-domain binding into the independent GitHub Pages build.
-(OUT/'CNAME').unlink(missing_ok=True)
+# Preserve the configured domain, including for isolated output builds.
+if DOMAIN:
+ if (OUT/'CNAME').resolve() != CNAME.resolve():
+  shutil.copyfile(CNAME, OUT/'CNAME')
+else:
+ (OUT/'CNAME').unlink(missing_ok=True)
 print(f"Built {len(paths)} indexable pages in {OUT}; canonical={BASE}")
