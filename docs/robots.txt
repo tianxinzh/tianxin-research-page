@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://searcher.cloud/sitemap.xml
+Sitemap: https://tianxinzh.github.io/sitemap.xml

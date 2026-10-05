@@ -2,10 +2,18 @@
 """Build a dependency-free, crawlable academic site for GitHub Pages."""
 from pathlib import Path
 from html import escape
-import json, shutil, datetime
+import argparse, json, shutil
 ROOT=Path(__file__).resolve().parents[1]
-OUT=ROOT/'docs'
-BASE='https://searcher.cloud'
+parser=argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--custom-domain', action='store_true',
+                    help='Explicitly build for searcher.cloud; writes CNAME and enables indexing.')
+parser.add_argument('--output-dir', type=Path,
+                    help='Write to this directory instead of docs (useful for isolated checks).')
+args=parser.parse_args()
+OUT=args.output_dir.resolve() if args.output_dir else ROOT/'docs'
+CUSTOM_DOMAIN=args.custom_domain
+BASE='https://searcher.cloud' if CUSTOM_DOMAIN else 'https://tianxinzh.github.io'
+ROBOTS='index,follow' if CUSTOM_DOMAIN else 'noindex,follow' 
 VERIFIED='2026-10-05'
 PAPERS=json.loads((ROOT/'content/papers.json').read_text())
 SCHOLAR='https://scholar.google.com/citations?user=hkDNs4MAAAAJ&hl=en'
@@ -20,7 +28,7 @@ def page(title,desc,path,body,schema=None,meta='',section=''):
  return f'''<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{e(title)}</title><meta name="description" content="{e(desc)}"><meta name="author" content="Tianxin Zhou">
-<link rel="canonical" href="{BASE+path}"><meta name="robots" content="index,follow"><meta name="theme-color" content="#f6f3ed">
+<link rel="canonical" href="{BASE+path}"><meta name="robots" content="{ROBOTS}"><meta name="theme-color" content="#f6f3ed">
 <meta property="og:type" content="{'article' if path.startswith('/papers/') else 'website'}"><meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:url" content="{BASE+path}"><meta property="og:site_name" content="Tianxin Zhou · Research">
 <meta name="twitter:card" content="summary"><meta name="twitter:title" content="{e(title)}"><meta name="twitter:description" content="{e(desc)}">
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg"><link rel="stylesheet" href="/assets/style.css">{meta}
@@ -69,5 +77,10 @@ write('404.html',page('Page Not Found | Tianxin Zhou','Find the research papers 
 write('robots.txt','User-agent: *\nAllow: /\n\nSitemap: '+BASE+'/sitemap.xml\n')
 write('sitemap.xml','<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+''.join(f'  <url><loc>{BASE+p}</loc><lastmod>{VERIFIED}</lastmod></url>\n' for p in paths)+'</urlset>\n')
 write('.nojekyll','')
-write('CNAME','searcher.cloud\n')
-print(f'Built {len(paths)} pages, 404 fallback, citation downloads, and static assets in {OUT}')
+if CUSTOM_DOMAIN:
+ write('CNAME','searcher.cloud\n')
+else:
+ # CNAME is generated deployment configuration. Default builds must not carry
+ # a stale custom-domain binding forward from an earlier production build.
+ (OUT/'CNAME').unlink(missing_ok=True)
+print(f"Built {len(paths)} pages in {OUT}; mode={'custom-domain' if CUSTOM_DOMAIN else 'GitHub preview'}; canonical={BASE}")
