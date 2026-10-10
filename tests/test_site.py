@@ -393,7 +393,10 @@ class SiteTests(unittest.TestCase):
             self.assertEqual(page.jsonld[0]['dateModified'], paper['page_updated_date'])
             self.assertIn(paper['abstract']['source_url'], page.links)
             self.assertEqual(len(paper['contributions']), len(paper['contribution_sources']))
-            self.assertEqual(len(paper['researcher_questions']), 2)
+            self.assertEqual(len(paper['researcher_questions']), 6 if paper['slug'] == 'juryprobe' else 2)
+            for question in paper['researcher_questions']:
+                self.assertIn(escape(question['question'], quote=True), page.source)
+                self.assertIn(escape(question['answer'], quote=True), page.source)
             self.assertEqual(page.attrs('details'), [], 'Abstract must not require expanding a control')
             for group in paper['contribution_sources'] + [q['sources'] for q in paper['researcher_questions']]:
                 self.assertTrue(group)
@@ -405,6 +408,25 @@ class SiteTests(unittest.TestCase):
         self.assertIn('Code is not publicly released.', dynamic)
         self.assertIn('not a current download or release announcement', dynamic)
         self.assertNotIn('FAQPage', dynamic)
+
+    def test_paper_sitemap_dates_track_content_updates(self):
+        ns = {'s': 'http://www.sitemaps.org/schemas/sitemap/0.9'}
+        root = ET.parse(DOCS / 'sitemap.xml').getroot()
+        dates = {url.find('s:loc', ns).text: url.find('s:lastmod', ns).text
+                 for url in root.findall('s:url', ns)}
+        for paper in PAPERS:
+            self.assertEqual(dates[BASE + '/papers/' + paper['slug'] + '/'],
+                             paper['page_updated_date'])
+        self.assertEqual(dates[BASE + '/'], '2026-10-05')
+
+    def test_juryprobe_answers_preserve_empirical_limits(self):
+        jury = next(p for p in PAPERS if p['slug'] == 'juryprobe')
+        text = ' '.join(q['answer'] for q in jury['researcher_questions'])
+        for qualifier in ('different sample scopes', 'pairwise false-negative correlation remained positive',
+                          'coverage tradeoff', 'no formal risk guarantee',
+                          'does not establish reliable stand-down for natural panels'):
+            self.assertIn(qualifier, text)
+        self.assertEqual(jury['page_updated_date'], '2026-10-10')
 
     def test_home_visible_author_credit_and_established_profiles(self):
         page = self.pages[DOCS / 'index.html']

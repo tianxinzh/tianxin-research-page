@@ -77,8 +77,8 @@
     ],
     "researcher_questions": [
       {
-        "question": "How can agreeing LLM judges still be wrong?",
-        "answer": "Different judges can miss the same factual corruption. JuryProbe measures this shared failure on labeled calibration claims using false-negative correlation and false-consensus lift. It assesses a panel’s risk regime, rather than scoring the safety of each new claim.",
+        "question": "Are multiple agreeing LLM judges reliable evidence of factual correctness?",
+        "answer": "Not automatically. Different reference-free judges can miss the same factual corruption, so unanimous agreement can be wrong. JuryProbe measures shared false-negative errors on labeled calibration claims using false-negative correlation and false-consensus lift. It assesses a panel’s risk regime, rather than certifying each new claim.",
         "sources": [
           {
             "url": "https://arxiv.org/html/2608.20607v2#S3.SS1",
@@ -87,6 +87,20 @@
           {
             "url": "https://arxiv.org/html/2608.20607v2#S3.SS2",
             "label": "v2 §3.2"
+          }
+        ]
+      },
+      {
+        "question": "What is false unanimous consensus, and how does JuryProbe measure it?",
+        "answer": "False unanimous consensus occurs when every judge accepts a corrupted claim. False-consensus lift compares the observed unanimous false-accept rate with the rate expected if the judges’ errors were independent. A lift above one indicates excess joint failure on that evaluation subset. Table 1 reports false-negative correlations over all corrupted claims separately from lift on the GPT-4o-detectable subset; these quantities have different sample scopes.",
+        "sources": [
+          {
+            "url": "https://arxiv.org/html/2608.20607v2#S3.SS2",
+            "label": "v2 §3.2"
+          },
+          {
+            "url": "https://arxiv.org/html/2608.20607v2#S5.T1",
+            "label": "v2 Table 1"
           }
         ]
       },
@@ -103,10 +117,64 @@
             "label": "v2 §3.4"
           }
         ]
+      },
+      {
+        "question": "Does evidence grounding eliminate correlated errors in LLM judges?",
+        "answer": "No. No unanimous false consensus was observed with trusted references in the tested Number/Entity FEVER subsets and SciFact diagnostic, but this does not establish error independence or a universal guarantee. On SciFact, pairwise false-negative correlation remained positive with rationale or full-abstract evidence, even though no unanimous false consensus was observed. Grounding and independent errors are different claims.",
+        "sources": [
+          {
+            "url": "https://arxiv.org/html/2608.20607v2#S5.T2",
+            "label": "v2 Table 2"
+          },
+          {
+            "url": "https://arxiv.org/html/2608.20607v2#S5.SS2",
+            "label": "v2 §5.2"
+          },
+          {
+            "url": "https://arxiv.org/html/2608.20607v2#A5.T10",
+            "label": "v2 Table 10"
+          }
+        ]
+      },
+      {
+        "question": "What changes when references come from weak retrieval?",
+        "answer": "Evidence quality matters. In the BM25 retrieval stress test, grounding reduced false accepts but also reduced acceptance of clean claims. This is a coverage tradeoff, not evidence that weak retrieval outperforms trusted references. Trusted-reference results are best-case diagnostics, rather than a guarantee for a deployed retrieval system.",
+        "sources": [
+          {
+            "url": "https://arxiv.org/html/2608.20607v2#S5.SS5",
+            "label": "v2 §5.5"
+          },
+          {
+            "url": "https://arxiv.org/html/2608.20607v2#A9.T15",
+            "label": "v2 Table 15"
+          },
+          {
+            "url": "https://arxiv.org/html/2608.20607v2#A9.T16",
+            "label": "v2 Table 16"
+          }
+        ]
+      },
+      {
+        "question": "Can an unflagged judge panel safely skip verification?",
+        "answer": "JuryProbe provides no formal risk guarantee and does not establish reliable stand-down for natural panels. Its routing decision comes from a labeled calibration probe, not a per-claim safety score. When judges or the claim distribution change, stale calibration can miss renewed consensus risk; the paper studies periodic recalibration as a response.",
+        "sources": [
+          {
+            "url": "https://arxiv.org/html/2608.20607v2#S3.SS4",
+            "label": "v2 §3.4"
+          },
+          {
+            "url": "https://arxiv.org/html/2608.20607v2#S6.SS1",
+            "label": "v2 §6.1"
+          },
+          {
+            "url": "https://arxiv.org/html/2608.20607v2#S6.SS2",
+            "label": "v2 §6.2"
+          }
+        ]
       }
     ],
     "citation_context": "Relevant when discussing shared false-negative errors in reference-free factuality judge panels, panel-level calibration diagnostics, or accept-conditioned grounded verification. It does not establish that an unflagged panel is safe.",
-    "page_updated_date": "2026-10-05"
+    "page_updated_date": "2026-10-10"
   },
   {
     "slug": "modularsql",

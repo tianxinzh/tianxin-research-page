@@ -65,10 +65,16 @@ No license is assigned here to coauthored research implementations. Public visib
 
 ## Source-led discovery and Scholar metadata
 
-Paper pages include the complete author-written abstract from a versioned arXiv abstract record (which may differ from the full-paper abstract), two concise researcher questions, and version/section/table links next to reported findings. The same visible abstract appears in ScholarlyArticle JSON-LD. OpenRegShift's versioned release sentence is accompanied by the current non-public code status.
+Paper pages include the complete author-written abstract from a versioned arXiv abstract record (which may differ from the full-paper abstract), concise researcher questions, and version/section/table links next to reported findings. The same visible abstract appears in ScholarlyArticle JSON-LD. OpenRegShift's versioned release sentence is accompanied by the current non-public code status.
 
 The papers are coauthored by the site owner. Their arXiv non-exclusive distribution license is not a general third-party reuse license; confirm author/publisher permission before republishing abstracts if rights have changed. No PDFs or private implementations are mirrored.
 
 We omit `citation_pdf_url` because the PDFs live on arXiv, not in the same subdirectory as the local HTML abstracts required by [Google Scholar's full-text association guidance](https://scholar.google.com/intl/en/scholar/inclusion.html). Visible original PDF links are retained. Title, author, publication-year, journal (where verified), and abstract-page metadata remain. This does not promise Scholar inclusion, AI citation, or ranking improvements. No special AI-only files or FAQ rich-result claims are added.
 
-`page_updated_date` records a substantial page-content change, not the time a build runs. The sitemap's existing 2026-10-05 lastmod remains truthful for this same-day content update. Update these dates only when the corresponding content changes; keep publication dates separate.
+`page_updated_date` records a substantial page-content change, not the time a build runs. Paper sitemap entries use each paper's `page_updated_date`; unchanged collection pages retain their existing last-modified date. Update these dates only when the corresponding content changes; keep publication dates separate.
+
+## Evaluating AI-assisted discovery
+
+The JuryProbe question-and-answer section explains shared judge errors, false-consensus lift, grounding, retrieval tradeoffs, and calibration limits using linked v2 sections and tables. Its visible answers are editorial summaries, not new experimental results. The abstract, author order, citations, canonical URLs, and other paper pages are preserved.
+
+A content change is not evidence of increased retrieval or citations. For a before/after check, keep the exact unbranded questions, search-enabled product/model, date, retrieval settings, and answer citations. Record whether the paper is mentioned, which URL is retrieved or cited (this page, arXiv, or the venue), and whether the claim is attributed accurately. Separate actual ChatGPT/research-agent answer tests from ordinary web-search proxies and direct page lookups. Repeat the same protocol after deployment and allow for indexing delays; a single omission or site-specific search miss does not establish deindexing. Do not report a citation uplift without comparable observed answer results, or attribute a change causally to these edits without a controlled evaluation. No visibility or citation increase is promised.

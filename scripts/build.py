@@ -109,7 +109,8 @@ sources='''<header class="page-head"><p class="eyebrow">Source transparency</p><
 write('sources/index.html',page('Sources & Verification Notes | '+SITE_NAME,'Source records, publication status, code availability, and citation metadata notes for the selected research collection.','/sources/',sources,{'@context':'https://schema.org','@type':'WebPage','name':'Sources and verification notes','url':BASE+'/sources/'},section='Sources'))
 write('404.html',page('Page Not Found | '+SITE_NAME,'Find the research papers and citation library.','/404.html','<section class="not-found"><p class="eyebrow">404 · Page not found</p><h1>Back to the research.</h1><p>This address does not match a page in the collection.</p><a href="/">Visit the paper index →</a></section>').replace('content="index,follow"','content="noindex,follow"'))
 write('robots.txt','User-agent: *\nAllow: /\n\nSitemap: '+BASE+'/sitemap.xml\n')
-write('sitemap.xml','<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+''.join(f'  <url><loc>{BASE+p}</loc><lastmod>{VERIFIED}</lastmod></url>\n' for p in paths)+'</urlset>\n')
+page_dates={'/papers/'+p['slug']+'/':p['page_updated_date'] for p in PAPERS}
+write('sitemap.xml','<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+''.join(f'  <url><loc>{BASE+p}</loc><lastmod>{page_dates.get(p, VERIFIED)}</lastmod></url>\n' for p in paths)+'</urlset>\n')
 write('.nojekyll','')
 # Preserve the configured domain, including for isolated output builds.
 if DOMAIN:
