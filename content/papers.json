@@ -258,8 +258,8 @@
     ],
     "researcher_questions": [
       {
-        "question": "What can set-based SQL evaluation miss?",
-        "answer": "Two query outputs can contain the same distinct rows but different duplicate counts. BIRD’s set-collapsing comparison can hide that difference; Multiset-EX preserves it. This limitation does not apply to every Text-to-SQL evaluator: Spider’s test-suite evaluator already compares multisets.",
+        "question": "Why can text-to-SQL execution accuracy miss duplicate-row errors?",
+        "answer": "Set-based comparison discards duplicate counts: one copy of a row can match several copies. This is the Multiplicity Blind Spot. Multiset-EX preserves counts while ignoring row order. BIRD’s set-collapsing evaluator has this limitation; Spider’s test-suite evaluator already compares multisets.",
         "sources": [
           {
             "url": "https://arxiv.org/html/2609.29573v1#S2.SS2",
@@ -268,8 +268,8 @@
         ]
       },
       {
-        "question": "What does ModularSQL need at runtime?",
-        "answer": "The detector uses the selected SQL and its database result. Full LLM rescue also needs upstream candidates; without them, only the detector and deterministic patches apply. An anomaly is a review signal, not proof of an error. Normal-looking semantic errors can pass undetected.",
+        "question": "Can a runtime check improve SQL results without replacing the generation pipeline?",
+        "answer": "ModularSQL runs after selection. Its detector inspects execution errors, empty outputs, and excessive duplication without an LLM. Unflagged queries pass through. Full rescue selects among upstream candidates before DISTINCT patches; candidate-free use needs only the selected SQL and database access.",
         "sources": [
           {
             "url": "https://arxiv.org/html/2609.29573v1#S3.SS1",
@@ -284,10 +284,74 @@
             "label": "v1 §4.3"
           }
         ]
+      },
+      {
+        "question": "Is adding DISTINCT always a safe fix for duplicate SQL results?",
+        "answer": "No. Duplicates can be legitimate, and DISTINCT with LIMIT can change even the distinct result values. The patches target DISTINCT-level changes, not general join or aggregation repair. Normal-looking semantic errors can escape detection; duplication or an empty result does not establish incorrectness.",
+        "sources": [
+          {
+            "url": "https://arxiv.org/html/2609.29573v1#S3.SS2",
+            "label": "v1 §3.2"
+          },
+          {
+            "url": "https://arxiv.org/html/2609.29573v1#S3.SS1",
+            "label": "v1 §3.1"
+          },
+          {
+            "url": "https://arxiv.org/html/2609.29573v1#Sx1",
+            "label": "v1 Limitations"
+          }
+        ]
+      },
+      {
+        "question": "What accuracy gain and runtime cost were measured for a multiplicity guardrail?",
+        "answer": "On 1,532 executable BIRD-Dev queries, the Qwen3-Coder DeepEye-SQL reproduction improved Multiset-EX from 65.86% to 67.75%, with Set-EX unchanged at 72.06%. The run flagged 77 queries, adding $0.0076 total LLM cost and 120 ms amortized overhead per query. These are run-specific measurements.",
+        "sources": [
+          {
+            "url": "https://arxiv.org/html/2609.29573v1#S4.T3",
+            "label": "v1 Table 3"
+          },
+          {
+            "url": "https://arxiv.org/html/2609.29573v1#S4.SS5",
+            "label": "v1 §4.5"
+          },
+          {
+            "url": "https://arxiv.org/html/2609.29573v1#S4.SS6",
+            "label": "v1 §4.6"
+          }
+        ]
+      },
+      {
+        "question": "Does the guardrail transfer to other text-to-SQL systems?",
+        "answer": "Candidate-free detection and patches improved Multiset-EX by 10 queries for DAIL-SQL+GPT-4 and 8 for BIRD GPT-3.5-turbo, with unchanged Set-EX. Full candidate-based rescue was tested only with the DeepEye-SQL reproduction. Evaluation covers BIRD-Dev and SQLite, not production database engines.",
+        "sources": [
+          {
+            "url": "https://arxiv.org/html/2609.29573v1#S4.T2",
+            "label": "v1 Table 2"
+          },
+          {
+            "url": "https://arxiv.org/html/2609.29573v1#Sx1",
+            "label": "v1 Limitations"
+          }
+        ]
+      },
+      {
+        "question": "How can I try a duplicate-sensitive SQL evaluation example without a model or API key?",
+        "answer": "The public repository’s synthetic SQLite example runs with Python 3.9+ and the standard library. It illustrates set-versus-bag comparison without API keys, benchmark data, or an upstream checkout. It does not run the guardrail or reproduce the paper’s benchmark results; the README links separate reproduction scripts and dependencies.",
+        "sources": [
+          {
+            "url": "https://github.com/Ruixi1313/ModularSQL#quickstart-synthetic-multiplicity-example",
+            "label": "Public README: synthetic example"
+          },
+          {
+            "url": "https://github.com/Ruixi1313/ModularSQL#canonical-reproduction-scripts",
+            "label": "Public README: reproduction scripts"
+          }
+        ]
       }
     ],
     "citation_context": "Relevant when discussing duplicate-sensitive Text-to-SQL evaluation, the limits of set-collapsing execution accuracy, or selective post-selection runtime intervention. The reported experiments use BIRD-Dev and SQLite.",
-    "page_updated_date": "2026-10-05"
+    "page_updated_date": "2026-10-10"
   },
   {
     "slug": "openregshift",
@@ -369,8 +433,36 @@
     ],
     "researcher_questions": [
       {
-        "question": "How many target labels does this protocol use?",
-        "answer": "The main protocol uses 512 labeled target observations: 205 for diagnosis, 215 for fitting candidate combinations and 92 for validation. Base regressors stay frozen. Target test data are reserved for final evaluation, so this is not an unlabeled adaptation method.",
+        "question": "When can dynamic ensembling help regression under distribution shift?",
+        "answer": "The controlled experiments find gains when failures vary across regions and different models retain local competence. Greater shift severity alone is insufficient; generic prediction diversity does not establish regional benefit.",
+        "sources": [
+          {
+            "url": "https://arxiv.org/html/2608.18330v1#S5",
+            "label": "v1 §5"
+          }
+        ]
+      },
+      {
+        "question": "How can a labeled probe estimate whether regional ensemble weights will help?",
+        "answer": "D_CF5 cross-fits the loss improvement over a static convex blend. Dataset-level Spearman correlation with realized regional gains was +0.979 across 12 shifts and +0.829 in a 16-shift sensitivity analysis.",
+        "sources": [
+          {
+            "url": "https://arxiv.org/html/2608.18330v1#S2",
+            "label": "v1 §2"
+          },
+          {
+            "url": "https://arxiv.org/html/2608.18330v1#S4.SS1",
+            "label": "v1 §4.1"
+          },
+          {
+            "url": "https://arxiv.org/html/2608.18330v1#S4.SS5",
+            "label": "v1 §4.5"
+          }
+        ]
+      },
+      {
+        "question": "How many target labels are needed to fit and validate the ensemble?",
+        "answer": "The main protocol uses 512 labels: 205 for diagnosis, 215 for combination fitting, and 92 for validation. Base models stay frozen; target test observations are reserved for final evaluation.",
         "sources": [
           {
             "url": "https://arxiv.org/html/2608.18330v1#S3.SS1",
@@ -383,9 +475,13 @@
         ]
       },
       {
-        "question": "Does a low diagnostic value rule out all dynamic ensembles?",
-        "answer": "No. D_CF5 targets regional convex reweighting. In two Seoul Bike runs, a separate held-out selector accepted smooth covariate-dependent stacking despite a near-zero regional diagnostic. The selector does not take D_CF5 as input.",
+        "question": "Does a near-zero regional diagnostic rule out other dynamic ensembles?",
+        "answer": "No. It measures regional convex reweighting, not every dynamic mechanism. A separate selector validated smooth covariate-dependent stacking in two Seoul Bike runs despite near-zero D_CF5; the selector does not use D_CF5.",
         "sources": [
+          {
+            "url": "https://arxiv.org/html/2608.18330v1#S2",
+            "label": "v1 §2"
+          },
           {
             "url": "https://arxiv.org/html/2608.18330v1#S4.SS4",
             "label": "v1 §4.4"
@@ -395,9 +491,41 @@
             "label": "v1 §6"
           }
         ]
+      },
+      {
+        "question": "Can held-out validation prevent harmful ensemble deployments?",
+        "answer": "The selector requires a positive held-out lower confidence bound versus its static floor. All 12 prospective runs matched or improved that floor, but this asymptotic rule provides no finite-sample guarantee.",
+        "sources": [
+          {
+            "url": "https://arxiv.org/html/2608.18330v1#S6",
+            "label": "v1 §6"
+          },
+          {
+            "url": "https://arxiv.org/html/2608.18330v1#S6.T3",
+            "label": "v1 Table 3"
+          },
+          {
+            "url": "https://arxiv.org/html/2608.18330v1#S8",
+            "label": "v1 §8"
+          }
+        ]
+      },
+      {
+        "question": "What is available for reproducing these regression-shift experiments?",
+        "answer": "The public paper describes datasets, splits, and methods. Code is not publicly released; this page does not offer downloadable experiment artifacts.",
+        "sources": [
+          {
+            "url": "https://arxiv.org/html/2608.18330v1#A2.SS1",
+            "label": "v1 Appendix B.1"
+          },
+          {
+            "url": "https://arxiv.org/html/2608.18330v1#A2",
+            "label": "v1 Appendix B"
+          }
+        ]
       }
     ],
     "citation_context": "Relevant when discussing probe-based diagnosis of regional convex ensemble gains under distribution shift, or held-out validation of frozen-model combinations. The diagnostic is not a universal predictor of dynamic-ensemble gains.",
-    "page_updated_date": "2026-10-05"
+    "page_updated_date": "2026-10-10"
   }
 ]

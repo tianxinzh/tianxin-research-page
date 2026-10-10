@@ -393,7 +393,7 @@ class SiteTests(unittest.TestCase):
             self.assertEqual(page.jsonld[0]['dateModified'], paper['page_updated_date'])
             self.assertIn(paper['abstract']['source_url'], page.links)
             self.assertEqual(len(paper['contributions']), len(paper['contribution_sources']))
-            self.assertEqual(len(paper['researcher_questions']), 6 if paper['slug'] == 'juryprobe' else 2)
+            self.assertEqual(len(paper['researcher_questions']), 6)
             for question in paper['researcher_questions']:
                 self.assertIn(escape(question['question'], quote=True), page.source)
                 self.assertIn(escape(question['answer'], quote=True), page.source)
@@ -402,7 +402,9 @@ class SiteTests(unittest.TestCase):
                 self.assertTrue(group)
                 for source in group:
                     self.assertIn(source['url'], page.links)
-                    self.assertTrue(source['url'].startswith(paper['html_url'] + '#'))
+                    allowed_source_bases = [paper['html_url']] + ([paper['code_url']] if paper['code_url'] else [])
+                    self.assertTrue(any(source['url'].startswith(base + '#')
+                                        for base in allowed_source_bases))
             self.assertGreater(len(paper['abstract']['text'].split()), 200)
         dynamic = self.pages[DOCS / 'papers/openregshift/index.html'].source
         self.assertIn('Code is not publicly released.', dynamic)
